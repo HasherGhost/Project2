@@ -31,6 +31,40 @@ let currentFilter = 'all';
 let seats = Array.from({length:40}, (_,i) => ({id:i+1, occupied: Math.random() < 0.3}));
 let nextDishId = 21;
 
+// ===== CANTEEN CONFIG =====
+let canteenConfig = {
+  name: "SmartCanteen",
+  tagline: "Your campus dining, reimagined"
+};
+
+function loadCanteenConfig() {
+  const saved = localStorage.getItem('canteenConfig');
+  if (saved) {
+    canteenConfig = JSON.parse(saved);
+  }
+  applyCanteenConfig();
+}
+
+function applyCanteenConfig() {
+  document.getElementById('canteenNameLogin').textContent = canteenConfig.name;
+  document.getElementById('canteenTaglineLogin').textContent = canteenConfig.tagline;
+  document.getElementById('canteenNameNav').textContent = canteenConfig.name;
+  
+  // Update inputs if on admin page
+  if (currentRole === 'admin') {
+    document.getElementById('cfgCanteenName').value = canteenConfig.name;
+    document.getElementById('cfgCanteenTagline').value = canteenConfig.tagline;
+  }
+}
+
+function updateCanteenConfig() {
+  canteenConfig.name = document.getElementById('cfgCanteenName').value || "SmartCanteen";
+  canteenConfig.tagline = document.getElementById('cfgCanteenTagline').value || "Your campus dining, reimagined";
+  localStorage.setItem('canteenConfig', JSON.stringify(canteenConfig));
+  applyCanteenConfig();
+  showToast("Branding updated!");
+}
+
 // ===== CLOCK =====
 function updateClocks() {
   const now = new Date();
@@ -46,8 +80,8 @@ function login(role) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(role + 'Screen').classList.add('active');
   if (role === 'student') { renderMenu(); renderSeats(); renderStudentOrders(); }
-  if (role === 'staff') { renderStaffOrders(); renderStaffMenu(); }
-  if (role === 'admin') { renderAdminDashboard(); renderAdminMenu(); }
+  if (role === 'staff') { renderStaffOrders(); renderStaffMenu(); renderStaffSeats(); }
+  if (role === 'admin') { renderAdminDashboard(); renderAdminMenu(); applyCanteenConfig(); }
   showToast(`Welcome, ${role.charAt(0).toUpperCase()+role.slice(1)}!`);
 }
 
@@ -95,17 +129,32 @@ function filterMenu(cat) {
 function renderMenu() {
   const grid = document.getElementById('menuGrid');
   const items = currentFilter === 'all' ? menuData : menuData.filter(i => i.category === currentFilter);
-  grid.innerHTML = items.map(item => `
-    <div class="menu-item ${item.available ? '' : 'unavailable'}" id="mi-${item.id}">
+  grid.innerHTML = items.map(item => {
+    const qty = getCartQty(item.id);
+    return `
+    <div class="menu-item ${item.available ? '' : 'unavailable'} animate-pop" id="mi-${item.id}">
       <span class="emoji">${item.emoji}</span>
       <div class="item-name">${item.name}</div>
       <div class="item-desc">${item.desc}</div>
       <div class="item-bottom">
         <span class="item-price">₹${item.price}</span>
-        ${item.available ? `<button class="btn-add" onclick="addToCart(${item.id})"><i class="fas fa-plus"></i></button>` : '<span style="font-size:12px;color:var(--danger)">Unavailable</span>'}
+        <div class="item-actions">
+          ${item.available ? (qty > 0 ? `
+            <div class="qty-control-main">
+              <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+              <span class="qty-label">${qty}</span>
+              <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+            </div>
+          ` : `<button class="btn-add" onclick="addToCart(${item.id})"><i class="fas fa-plus"></i></button>`) : '<span class="status-out">Out of Stock</span>'}
+        </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
+}
+
+function getCartQty(id) {
+  const item = cart.find(c => c.id === id);
+  return item ? item.qty : 0;
 }
 
 // ===== CART =====
@@ -116,10 +165,8 @@ function addToCart(itemId) {
   if (existing) existing.qty++;
   else cart.push({...item, qty: 1});
   updateCartUI();
+  renderMenu();
   showToast(`${item.name} added to cart`);
-  // Animate button
-  const btn = document.querySelector(`#mi-${itemId} .btn-add`);
-  if(btn){btn.style.transform='scale(1.3)';setTimeout(()=>btn.style.transform='',200);}
 }
 
 function updateCartUI() {
@@ -151,8 +198,16 @@ function changeQty(id, delta) {
   const item = cart.find(c => c.id === id);
   if (!item) return;
   item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+  if (item.qty <= 0) {
+    cart = cart.filter(c => c.id !== id);
+    showToast("Item removed");
+  } else if (delta > 0) {
+    showToast("Quantity increased");
+  } else {
+    showToast("Quantity decreased");
+  }
   updateCartUI();
+  renderMenu();
 }
 
 function toggleCart() {
@@ -450,10 +505,11 @@ function updateThemeIcons(theme) {
 }
 
 // Initial Theme Selection
-(function initTheme() {
+(function initApp() {
   const savedTheme = localStorage.getItem('theme') || 'dark';
   document.body.setAttribute('data-theme', savedTheme);
   updateThemeIcons(savedTheme);
+  loadCanteenConfig();
 })();
 
 // ===== INIT =====
