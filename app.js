@@ -403,5 +403,34 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+  const body = document.body;
+  const currentTheme = body.getAttribute('data-theme') || 'dark';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  body.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcons(newTheme);
+}
+
+function updateThemeIcons(theme) {
+  const icons = document.querySelectorAll('.theme-toggle i, .theme-toggle-floating i');
+  icons.forEach(icon => {
+    if (theme === 'light') {
+      icon.classList.replace('fa-moon', 'fa-sun');
+    } else {
+      icon.classList.replace('fa-sun', 'fa-moon');
+    }
+  });
+}
+
+// Initial Theme Selection
+(function initTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  updateThemeIcons(savedTheme);
+})();
+
 // ===== INIT =====
 updateCartUI();
