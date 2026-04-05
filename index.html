@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="mesh-bg"></div>
     <!-- Login Screen -->
     <div id="loginScreen" class="screen active">
         <div class="login-bg">
@@ -120,7 +121,8 @@
             <div class="nav-left"><div class="brand-sm"><i class="fas fa-utensils"></i> SmartCanteen <span class="role-badge">Staff</span></div></div>
             <div class="nav-center">
                 <button class="nav-tab active" data-tab="sorders" onclick="switchStaffTab('sorders')"><i class="fas fa-clipboard-list"></i> Orders</button>
-                <button class="nav-tab" data-tab="smenu" onclick="switchStaffTab('smenu')"><i class="fas fa-book-open"></i> Menu</button>
+                <button class="nav-tab" data-tab="smenu" onclick="switchStaffTab('smenu')"><i class="fas fa-utensils"></i> Menu</button>
+                <button class="nav-tab" data-tab="sseats" onclick="switchStaffTab('sseats')"><i class="fas fa-chair"></i> Seats</button>
             </div>
             <div class="nav-right">
                 <div class="live-clock" id="staffClock"></div>
@@ -135,6 +137,18 @@
         <div id="staffMenuTab" class="tab-content">
             <div class="section-header"><h2>Menu Management</h2></div>
             <div id="staffMenuList" class="menu-manage-list"></div>
+        </div>
+        <div id="staffSeatsTab" class="tab-content">
+            <div class="section-header"><h2>Manage Seating Capacity</h2></div>
+            <div class="glass-card seat-management-card animate-pop">
+                <p style="margin-bottom: 20px; color: var(--text2);">Toggle seat status to reflect real-time availability across the campus portal.</p>
+                <div class="seats-info" style="margin-bottom: 24px;">
+                    <div class="seat-stat"><span class="seat-num" id="staffTotalSeats">40</span><span>Total</span></div>
+                    <div class="seat-stat available"><span class="seat-num" id="staffAvailSeats">0</span><span>Available</span></div>
+                    <div class="seat-stat occupied"><span class="seat-num" id="staffOccSeats">0</span><span>Occupied</span></div>
+                </div>
+                <div id="staffSeatingMap" class="seating-map clickable"></div>
+            </div>
         </div>
     </div>
 

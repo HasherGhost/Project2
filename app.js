@@ -71,8 +71,9 @@ function switchStaffTab(tab) {
   document.querySelectorAll('#staffScreen .nav-tab').forEach(t => t.classList.remove('active'));
   document.querySelector(`#staffScreen .nav-tab[data-tab="${tab}"]`).classList.add('active');
   document.querySelectorAll('#staffScreen .tab-content').forEach(t => t.classList.remove('active'));
-  const tabMap = {sorders:'staffOrdersTab',smenu:'staffMenuTab'};
+  const tabMap = {sorders:'staffOrdersTab',smenu:'staffMenuTab',sseats:'staffSeatsTab'};
   document.getElementById(tabMap[tab]).classList.add('active');
+  if(tab==='sseats') renderStaffSeats();
 }
 function switchAdminTab(tab) {
   document.querySelectorAll('#adminScreen .nav-tab').forEach(t => t.classList.remove('active'));
@@ -368,12 +369,35 @@ function renderSeats() {
     `<div class="seat ${s.occupied ? 'taken' : 'free'}">${s.id}</div>`
   ).join('');
 }
-// Simulate seat changes
+
+function renderStaffSeats() {
+  const avail = seats.filter(s => !s.occupied).length;
+  const occ = seats.filter(s => s.occupied).length;
+  document.getElementById('staffTotalSeats').textContent = seats.length;
+  document.getElementById('staffAvailSeats').textContent = avail;
+  document.getElementById('staffOccSeats').textContent = occ;
+  document.getElementById('staffSeatingMap').innerHTML = seats.map(s =>
+    `<div class="seat ${s.occupied ? 'taken' : 'free'}" onclick="toggleSeat(${s.id})">${s.id}</div>`
+  ).join('');
+}
+
+function toggleSeat(id) {
+  const seat = seats.find(s => s.id === id);
+  if (seat) {
+    seat.occupied = !seat.occupied;
+    renderStaffSeats();
+    showToast(`Seat ${id} marked as ${seat.occupied ? 'Occupied' : 'Available'}`);
+  }
+}
+// Simulate sporadic seat changes (reduced frequency for manual control stability)
 setInterval(() => {
-  const idx = Math.floor(Math.random() * seats.length);
-  seats[idx].occupied = !seats[idx].occupied;
-  if(currentRole === 'student' && document.getElementById('studentSeatsTab').classList.contains('active')) renderSeats();
-}, 8000);
+  if (Math.random() > 0.8) {
+    const idx = Math.floor(Math.random() * seats.length);
+    seats[idx].occupied = !seats[idx].occupied;
+    if(currentRole === 'student' && document.getElementById('studentSeatsTab').classList.contains('active')) renderSeats();
+    if(currentRole === 'staff' && document.getElementById('staffSeatsTab').classList.contains('active')) renderStaffSeats();
+  }
+}, 12000);
 
 // ===== WALLET =====
 function showWalletModal() {

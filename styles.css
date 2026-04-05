@@ -4,31 +4,72 @@
   --bg:#0a0a0f;--bg2:#12121a;--surface:rgba(255,255,255,.04);
   --glass:rgba(255,255,255,.06);--glass-border:rgba(255,255,255,.1);
   --text:#e8e8ed;--text2:#8a8a9a;--accent:#6c63ff;--accent2:#a78bfa;
-  --success:#22c55e;--warning:#f59e0b;--danger:#ef4444;
-  --radius:16px;--radius-sm:10px;
-  --card-shadow: 0 8px 32px rgba(0,0,0,.3);
+  --success:#2ecc71;--warning:#f1c40f;--danger:#e74c3c;
+  --radius:20px;--radius-sm:12px;
+  --card-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  --grad-1: #6c63ff; --grad-2: #a78bfa; --grad-3: #4834d4;
 }
 
 [data-theme="light"] {
-  --bg:#f8f9fa;--bg2:#ffffff;--surface:rgba(0,0,0,.03);
-  --glass:rgba(255,255,255,0.7);--glass-border:rgba(0,0,0,.08);
-  --text:#1a1a2e;--text2:#636e72;--accent:#4834d4;--accent2:#686de0;
-  --success:#27ae60;--warning:#f39c12;--danger:#e74c3c;
-  --card-shadow: 0 8px 32px rgba(0,0,0,.08);
+  --bg:#f0f2f5;--bg2:#ffffff;--surface:rgba(0,0,0,.03);
+  --glass:rgba(255,255,255,0.7);--glass-border:rgba(0,0,0,0.06);
+  --text:#2d3436;--text2:#636e72;--accent:#6c63ff;--accent2:#8e44ad;
+  --success:#27ae60;--warning:#f39c12;--danger:#d63031;
+  --card-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  --grad-1: #a29bfe; --grad-2: #dfe6e9; --grad-3: #74b9ff;
 }
-html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background 0.3s ease, color 0.3s ease;}
 
-/* Glass Card */
-.glass-card{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid var(--glass-border);border-radius:var(--radius);padding:24px;
-  transition:all .3s cubic-bezier(.4,0,.2,1)}
-.glass-card:hover{border-color:rgba(255,255,255,.15);box-shadow:var(--card-shadow)}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background: var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  transition: background 0.5s ease, color 0.5s ease;
+  position: relative;
+}
+
+/* Creative Animated Background */
+.mesh-bg {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -1; filter: blur(100px); opacity: 0.4;
+  background: radial-gradient(circle at 10% 20%, var(--grad-1), transparent 40%),
+              radial-gradient(circle at 90% 80%, var(--grad-2), transparent 40%),
+              radial-gradient(circle at 50% 50%, var(--grad-3), transparent 50%);
+  animation: mesh-move 20s infinite alternate ease-in-out;
+}
+
+@keyframes mesh-move {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.2) translate(50px, 30px); }
+}
+
+/* Glass Card Enhanced */
+.glass-card{
+  background:var(--glass); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--glass-border); border-radius:var(--radius); padding:24px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.glass-card:hover{
+  border-color:var(--accent); box-shadow:var(--card-shadow); transform: translateY(-5px);
+}
 
 /* Screens */
 .screen{display:none;min-height:100vh;position:relative}
-.screen.active{display:block;animation:fadeIn .5s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.screen.active{display:block;animation:staggerIn 0.6s ease-out both}
+
+@keyframes staggerIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop { animation: scaleUp 0.4s ease-out both; }
 
 /* Login */
 .login-bg{position:fixed;inset:0;overflow:hidden;z-index:0}
@@ -175,10 +216,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .seat-stat.available .seat-num{color:var(--success)}
 .seat-stat.occupied .seat-num{color:var(--danger)}
 .seating-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px;max-width:600px;margin:0 auto}
+.seating-map.clickable .seat{cursor:pointer}
+.seating-map.clickable .seat:hover{transform:scale(1.1);border-color:var(--accent)}
 .seat{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:600;transition:all .3s ease;cursor:default}
-.seat.free{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--success)}
-.seat.taken{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:var(--danger)}
+  font-size:12px;font-weight:600;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);cursor:default;user-select:none}
+.seat.free{background:rgba(46, 204, 113, 0.12);border:1px solid rgba(46, 204, 113, 0.3);color:var(--success)}
+.seat.taken{background:rgba(231, 76, 60, 0.12);border:1px solid rgba(231, 76, 60, 0.3);color:var(--danger)}
 
 /* Menu Management */
 .menu-manage-list{display:flex;flex-direction:column;gap:10px}
