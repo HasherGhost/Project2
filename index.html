@@ -4,232 +4,289 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SmartCanteen - Student Canteen Pre-Order & Management System">
-    <title>SmartCanteen | Student Canteen Portal</title>
+    <title>SmartCanteen | Campus Dining</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="mesh-bg"></div>
-    <div id="loginPage" class="screen active">
-    <div class="login-bg"></div>
-    <div class="glass-card login-form" style="max-width:400px;margin:auto;padding:32px;backdrop-filter:blur(20px);border-radius:20px;">
-        <h2 class="form-title" style="text-align:center;margin-bottom:24px;color:var(--text);">Welcome to SmartCanteen</h2>
-        <form onsubmit="performLogin(event)" style="display:flex;flex-direction:column;gap:16px;">
-            <div class="form-group">
-                <label for="username" style="color:var(--text2);">Username</label>
-                <input type="text" id="username" placeholder="Enter username" required style="width:100%;padding:10px;background:var(--surface);border:1px solid var(--glass-border);border-radius:12px;color:var(--text);"/>
-            </div>
-            <div class="form-group">
-                <label for="password" style="color:var(--text2);">Password</label>
-                <input type="password" id="password" placeholder="Enter password" required style="width:100%;padding:10px;background:var(--surface);border:1px solid var(--glass-border);border-radius:12px;color:var(--text);"/>
-            </div>
-            <div class="form-group">
-                <label for="roleSelect" style="color:var(--text2);">Role</label>
-                <select id="roleSelect" required style="width:100%;padding:10px;background:var(--surface);border:1px solid var(--glass-border);border-radius:12px;color:var(--text);">
-                    <option value="student">Student</option>
-                    <option value="staff">Staff</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <button type="submit" class="btn-primary login-button" style="padding:12px 0;">Login</button>
-        </form>
-        <button class="theme-toggle-floating" onclick="toggleTheme()" aria-label="Toggle Theme" style="position:absolute;top:20px;right:20px;">
+
+<!-- Animated mesh background -->
+<div class="mesh-bg"></div>
+<div class="orb-mid"></div>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage" class="screen active">
+    <!-- Floating food particles injected by JS -->
+    <div class="login-particles" id="loginParticles"></div>
+
+    <div class="login-wrapper">
+        <button class="login-theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
             <i class="fas fa-moon" id="themeIconFloating"></i>
         </button>
+
+        <div class="login-card-glass">
+            <!-- Brand -->
+            <div class="login-brand">
+                <div class="login-logo"><i class="fas fa-utensils"></i></div>
+                <div class="login-title" id="canteenNameLogin">SmartCanteen</div>
+                <div class="login-subtitle" id="canteenTaglineLogin">Your campus dining, reimagined</div>
+            </div>
+
+            <!-- Role selector -->
+            <div class="role-tabs" id="roleTabs">
+                <button class="role-tab-btn active" data-role="student" onclick="selectRoleTab(this)">
+                    <i class="fas fa-graduation-cap"></i> Student
+                </button>
+                <button class="role-tab-btn" data-role="staff" onclick="selectRoleTab(this)">
+                    <i class="fas fa-utensils"></i> Staff
+                </button>
+                <button class="role-tab-btn" data-role="admin" onclick="selectRoleTab(this)">
+                    <i class="fas fa-shield-halved"></i> Admin
+                </button>
+            </div>
+
+            <!-- Login form -->
+            <form onsubmit="performLogin(event)" autocomplete="off">
+                <div class="lf-group">
+                    <label class="lf-label" for="loginUsername">Username</label>
+                    <div class="lf-input-wrap">
+                        <input class="lf-input" type="text" id="loginUsername" placeholder="Enter your username" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="lf-group">
+                    <label class="lf-label" for="loginPassword">Password</label>
+                    <div class="lf-input-wrap">
+                        <input class="lf-input" type="password" id="loginPassword" placeholder="Enter your password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span>Sign In</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <p class="login-hint">Demo: any username &amp; password works ✨</p>
+        </div>
     </div>
 </div>
 
-    <!-- Student Screen -->
-    <div id="studentScreen" class="screen">
-        <nav class="glass-nav">
-            <div class="nav-left">
-                <div class="brand-sm"><i class="fas fa-utensils"></i> <span id="canteenNameNav">SmartCanteen</span></div>
-            </div>
-            <div class="nav-center">
-                <button class="nav-tab active" data-tab="menu" onclick="switchStudentTab('menu')"><i class="fas fa-book-open"></i> Menu</button>
-                <button class="nav-tab" data-tab="orders" onclick="switchStudentTab('orders')"><i class="fas fa-receipt"></i> Orders</button>
-                <button class="nav-tab" data-tab="seats" onclick="switchStudentTab('seats')"><i class="fas fa-chair"></i> Seats</button>
-            </div>
-            <div class="nav-right">
-                <div class="live-clock" id="studentClock"></div>
-                <div class="wallet-badge" onclick="showWalletModal()"><i class="fas fa-wallet"></i> ₹<span id="walletBalance">500</span></div>
-                <div class="cart-badge" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span id="cartCount" class="badge">0</span></div>
-                <button class="nav-tab theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
-                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-        </nav>
+<!-- ===== STUDENT SCREEN ===== -->
+<div id="studentScreen" class="screen">
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <div class="brand-sm"><i class="fas fa-utensils"></i> <span id="canteenNameNav">SmartCanteen</span></div>
+        </div>
+        <div class="nav-center">
+            <button class="nav-tab active" data-tab="menu" onclick="switchStudentTab('menu')"><i class="fas fa-bowl-food"></i> Menu</button>
+            <button class="nav-tab" data-tab="orders" onclick="switchStudentTab('orders')"><i class="fas fa-receipt"></i> Orders</button>
+            <button class="nav-tab" data-tab="seats" onclick="switchStudentTab('seats')"><i class="fas fa-chair"></i> Seats</button>
+        </div>
+        <div class="nav-right">
+            <div class="live-clock" id="studentClock"></div>
+            <div class="wallet-badge" onclick="showWalletModal()"><i class="fas fa-wallet"></i> ₹<span id="walletBalance">500</span></div>
+            <div class="cart-badge" onclick="toggleCart()"><i class="fas fa-bag-shopping"></i><span id="cartCount" class="badge">0</span></div>
+            <button class="nav-tab theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+            <button class="btn-logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i></button>
+        </div>
+    </nav>
 
-        <!-- Student Menu Tab -->
-        <div id="studentMenuTab" class="tab-content active">
-            <div class="section-header">
-                <h2>Today's Menu</h2>
-                <div class="menu-filters">
-                    <button class="filter-btn active" onclick="filterMenu('all')">All</button>
-                    <button class="filter-btn" onclick="filterMenu('snacks')">Snacks</button>
-                    <button class="filter-btn" onclick="filterMenu('meals')">Meals</button>
-                    <button class="filter-btn" onclick="filterMenu('beverages')">Beverages</button>
-                    <button class="filter-btn" onclick="filterMenu('desserts')">Desserts</button>
+    <!-- Hero Banner -->
+    <div class="student-hero">
+        <div class="student-hero-content">
+            <div class="hero-left">
+                <h2>Good <span id="greetingTime">Morning</span>, <span id="studentName">Student</span> 👋</h2>
+                <p class="hero-sub">What are you craving today? <span id="menuAvailCount">20 items</span> available.</p>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat-pill">
+                    <div class="hero-stat-num" id="heroTotalItems">20</div>
+                    <div class="hero-stat-lbl">Menu Items</div>
+                </div>
+                <div class="hero-stat-pill">
+                    <div class="hero-stat-num" id="heroAvailSeats">—</div>
+                    <div class="hero-stat-lbl">Free Seats</div>
+                </div>
+                <div class="hero-stat-pill">
+                    <div class="hero-stat-num" id="heroWallet">₹500</div>
+                    <div class="hero-stat-lbl">Wallet</div>
                 </div>
             </div>
-            <div id="menuGrid" class="menu-grid"></div>
-        </div>
-
-        <!-- Student Orders Tab -->
-        <div id="studentOrdersTab" class="tab-content">
-            <div class="section-header"><h2>My Orders</h2></div>
-            <div id="studentOrdersList" class="orders-list"></div>
-        </div>
-
-        <!-- Student Seats Tab -->
-        <div id="studentSeatsTab" class="tab-content">
-            <div class="section-header"><h2>Cafe Seating</h2></div>
-            <div class="seats-info glass-card">
-                <div class="seat-stat"><span class="seat-num" id="totalSeats">40</span><span>Total</span></div>
-                <div class="seat-stat available"><span class="seat-num" id="availSeats">28</span><span>Available</span></div>
-                <div class="seat-stat occupied"><span class="seat-num" id="occSeats">12</span><span>Occupied</span></div>
-            </div>
-            <div id="seatingMap" class="seating-map"></div>
-        </div>
-
-        <!-- Cart Sidebar -->
-        <div id="cartSidebar" class="cart-sidebar">
-            <div class="cart-header">
-                <h3><i class="fas fa-shopping-cart"></i> Your Cart</h3>
-                <button onclick="toggleCart()" class="close-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="cartItems" class="cart-items"></div>
-            <div class="cart-footer">
-                <div class="cart-total">Total: ₹<span id="cartTotal">0</span></div>
-                <button class="btn-primary btn-checkout" onclick="showCheckoutModal()">Checkout</button>
-            </div>
-        </div>
-        <div id="cartOverlay" class="overlay" onclick="toggleCart()"></div>
-    </div>
-
-    <!-- Staff Screen -->
-    <div id="staffScreen" class="screen">
-        <nav class="glass-nav">
-            <div class="nav-left"><div class="brand-sm"><i class="fas fa-utensils"></i> SmartCanteen <span class="role-badge">Staff</span></div></div>
-            <div class="nav-center">
-                <button class="nav-tab active" data-tab="sorders" onclick="switchStaffTab('sorders')"><i class="fas fa-clipboard-list"></i> Orders</button>
-                <button class="nav-tab" data-tab="smenu" onclick="switchStaffTab('smenu')"><i class="fas fa-utensils"></i> Menu</button>
-                <button class="nav-tab" data-tab="sseats" onclick="switchStaffTab('sseats')"><i class="fas fa-chair"></i> Seats</button>
-            </div>
-            <div class="nav-right">
-                <div class="live-clock" id="staffClock"></div>
-                <button class="nav-tab theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
-                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-        </nav>
-        <div id="staffOrdersTab" class="tab-content active">
-            <div class="section-header"><h2>Incoming Orders</h2></div>
-            <div id="staffOrdersList" class="orders-grid"></div>
-        </div>
-        <div id="staffMenuTab" class="tab-content">
-            <div class="section-header"><h2>Menu Management</h2></div>
-            <div id="staffMenuList" class="menu-manage-list"></div>
-        </div>
-        <div id="staffSeatsTab" class="tab-content">
-            <div class="section-header"><h2>Manage Seating Capacity</h2></div>
-            <div class="glass-card seat-management-card animate-pop">
-                <p style="margin-bottom: 20px; color: var(--text2);">Toggle seat status to reflect real-time availability across the campus portal.</p>
-                <div class="seats-info" style="margin-bottom: 24px;">
-                    <div class="seat-stat"><span class="seat-num" id="staffTotalSeats">40</span><span>Total</span></div>
-                    <div class="seat-stat available"><span class="seat-num" id="staffAvailSeats">0</span><span>Available</span></div>
-                    <div class="seat-stat occupied"><span class="seat-num" id="staffOccSeats">0</span><span>Occupied</span></div>
-                </div>
-                <div id="staffSeatingMap" class="seating-map clickable"></div>
-            </div>
         </div>
     </div>
 
-    <!-- Admin Screen -->
-    <div id="adminScreen" class="screen">
-        <nav class="glass-nav">
-            <div class="nav-left"><div class="brand-sm"><i class="fas fa-utensils"></i> SmartCanteen <span class="role-badge admin">Admin</span></div></div>
-            <div class="nav-center">
-                <button class="nav-tab active" data-tab="dashboard" onclick="switchAdminTab('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</button>
-                <button class="nav-tab" data-tab="amenu" onclick="switchAdminTab('amenu')"><i class="fas fa-book-open"></i> Menu</button>
+    <!-- Student Menu Tab -->
+    <div id="studentMenuTab" class="tab-content active">
+        <div class="section-header">
+            <h2>Today's Menu</h2>
+            <div class="menu-filters">
+                <button class="filter-btn active" onclick="filterMenu('all', this)"><i class="fas fa-border-all"></i> All</button>
+                <button class="filter-btn" onclick="filterMenu('snacks', this)">🥟 Snacks</button>
+                <button class="filter-btn" onclick="filterMenu('meals', this)">🍛 Meals</button>
+                <button class="filter-btn" onclick="filterMenu('beverages', this)">☕ Beverages</button>
+                <button class="filter-btn" onclick="filterMenu('desserts', this)">🍩 Desserts</button>
             </div>
-            <div class="nav-right">
-                <button class="nav-tab theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
-                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-        </nav>
-        <div id="adminDashboardTab" class="tab-content active">
-            <div class="section-header"><h2>Today's Dashboard</h2></div>
-            <div class="stats-row" id="adminStats"></div>
-            <div class="charts-row">
-                <div class="glass-card chart-card"><h3>Popular Items</h3><canvas id="pieChart"></canvas></div>
-                <div class="glass-card chart-card"><h3>Orders Timeline</h3><canvas id="barChart"></canvas></div>
-            </div>
-            <div class="glass-card"><h3>Recent Orders</h3><div id="adminOrdersList" class="admin-orders-table"></div></div>
         </div>
-        <div id="adminMenuTab" class="tab-content">
-            <div class="section-header">
-                <h2>Canteen Configuration</h2>
-                <button class="btn-primary" onclick="showAddDishModal()"><i class="fas fa-plus"></i> Add New Dish</button>
-            </div>
-            <div class="glass-card animate-pop" style="margin-bottom: 24px;">
-                <h3 style="margin-bottom: 16px;">General Branding</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <div class="form-group"><label>Canteen Name</label><input type="text" id="cfgCanteenName" onchange="updateCanteenConfig()" placeholder="e.g. Royal Cafe"></div>
-                    <div class="form-group"><label>Tagline</label><input type="text" id="cfgCanteenTagline" onchange="updateCanteenConfig()" placeholder="e.g. Taste of Excellence"></div>
-                </div>
-            </div>
-            <div id="adminMenuList" class="menu-manage-list"></div>
-        </div>
+        <div id="menuGrid" class="menu-grid"></div>
     </div>
 
-    <!-- Modals -->
-    <div id="checkoutModal" class="modal-overlay">
-        <div class="modal glass-card">
-            <div class="modal-header"><h3>Checkout</h3><button onclick="closeModal('checkoutModal')" class="close-btn"><i class="fas fa-times"></i></button></div>
-            <div class="modal-body">
-                <div id="checkoutSummary"></div>
-                <h4>Payment Method</h4>
-                <div class="payment-options">
-                    <label class="payment-opt"><input type="radio" name="payment" value="wallet" checked><span class="radio-custom"></span><i class="fas fa-wallet"></i> Wallet</label>
-                    <label class="payment-opt"><input type="radio" name="payment" value="online"><span class="radio-custom"></span><i class="fas fa-credit-card"></i> Online (UPI)</label>
-                    <label class="payment-opt"><input type="radio" name="payment" value="offline"><span class="radio-custom"></span><i class="fas fa-money-bill-wave"></i> Pay at Counter <small>(within 10 min)</small></label>
-                </div>
-            </div>
-            <div class="modal-footer"><button class="btn-primary" onclick="placeOrder()">Place Order</button></div>
-        </div>
+    <!-- Student Orders Tab -->
+    <div id="studentOrdersTab" class="tab-content">
+        <div class="section-header"><h2>My Orders</h2></div>
+        <div id="studentOrdersList" class="orders-list"></div>
     </div>
 
-    <div id="walletModal" class="modal-overlay">
-        <div class="modal glass-card">
-            <div class="modal-header"><h3>Wallet</h3><button onclick="closeModal('walletModal')" class="close-btn"><i class="fas fa-times"></i></button></div>
-            <div class="modal-body">
-                <div class="wallet-display">Balance: ₹<span id="walletDispBal">500</span></div>
-                <div class="form-group"><label>Add Money (₹)</label><input type="number" id="addMoneyAmt" placeholder="Enter amount" min="1"></div>
-            </div>
-            <div class="modal-footer"><button class="btn-primary" onclick="addMoney()">Add Money</button></div>
+    <!-- Student Seats Tab -->
+    <div id="studentSeatsTab" class="tab-content">
+        <div class="section-header"><h2>Cafe Seating</h2></div>
+        <div class="seats-info glass-card">
+            <div class="seat-stat"><span class="seat-num" id="totalSeats">40</span><span>Total</span></div>
+            <div class="seat-stat available"><span class="seat-num" id="availSeats">28</span><span>Available</span></div>
+            <div class="seat-stat occupied"><span class="seat-num" id="occSeats">12</span><span>Occupied</span></div>
         </div>
+        <div id="seatingMap" class="seating-map" style="margin-top:24px;"></div>
     </div>
 
-    <div id="addDishModal" class="modal-overlay">
-        <div class="modal glass-card">
-            <div class="modal-header"><h3>Add New Dish</h3><button onclick="closeModal('addDishModal')" class="close-btn"><i class="fas fa-times"></i></button></div>
-            <div class="modal-body">
-                <div class="form-group"><label>Dish Name</label><input type="text" id="newDishName" placeholder="e.g. Paneer Tikka"></div>
-                <div class="form-group"><label>Price (₹)</label><input type="number" id="newDishPrice" placeholder="e.g. 120" min="1"></div>
-                <div class="form-group"><label>Category</label>
-                    <select id="newDishCat"><option value="snacks">Snacks</option><option value="meals">Meals</option><option value="beverages">Beverages</option><option value="desserts">Desserts</option></select>
-                </div>
-                <div class="form-group"><label>Emoji Icon</label><input type="text" id="newDishEmoji" placeholder="e.g. 🍛" maxlength="2"></div>
-                <div class="form-group"><label>Description</label><input type="text" id="newDishDesc" placeholder="Short description"></div>
-            </div>
-            <div class="modal-footer"><button class="btn-primary" onclick="addNewDish()">Add Dish</button></div>
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-bag-shopping"></i> Your Cart</h3>
+            <button onclick="toggleCart()" class="close-btn"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-footer">
+            <div class="cart-total">₹<span id="cartTotal">0</span></div>
+            <button class="btn-primary btn-checkout" onclick="showCheckoutModal()"><i class="fas fa-bolt"></i> Checkout</button>
         </div>
     </div>
+    <div id="cartOverlay" class="overlay" onclick="toggleCart()"></div>
+</div>
 
-    <div id="toast" class="toast"></div>
+<!-- ===== STAFF SCREEN ===== -->
+<div id="staffScreen" class="screen">
+    <nav class="glass-nav">
+        <div class="nav-left"><div class="brand-sm"><i class="fas fa-utensils"></i> SmartCanteen <span class="role-badge">Staff</span></div></div>
+        <div class="nav-center">
+            <button class="nav-tab active" data-tab="sorders" onclick="switchStaffTab('sorders')"><i class="fas fa-clipboard-list"></i> Orders</button>
+            <button class="nav-tab" data-tab="smenu" onclick="switchStaffTab('smenu')"><i class="fas fa-utensils"></i> Menu</button>
+            <button class="nav-tab" data-tab="sseats" onclick="switchStaffTab('sseats')"><i class="fas fa-chair"></i> Seats</button>
+        </div>
+        <div class="nav-right">
+            <div class="live-clock" id="staffClock"></div>
+            <button class="nav-tab theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+            <button class="btn-logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i></button>
+        </div>
+    </nav>
+    <div id="staffOrdersTab" class="tab-content active">
+        <div class="section-header"><h2>Incoming Orders</h2></div>
+        <div id="staffOrdersList" class="orders-grid"></div>
+    </div>
+    <div id="staffMenuTab" class="tab-content">
+        <div class="section-header"><h2>Menu Management</h2></div>
+        <div id="staffMenuList" class="menu-manage-list"></div>
+    </div>
+    <div id="staffSeatsTab" class="tab-content">
+        <div class="section-header"><h2>Manage Seating</h2></div>
+        <div class="glass-card seat-management-card animate-pop">
+            <p style="margin-bottom:18px;color:var(--text2);">Toggle seats to reflect real-time availability across the portal.</p>
+            <div class="seats-info" style="margin-bottom:20px;">
+                <div class="seat-stat"><span class="seat-num" id="staffTotalSeats">40</span><span>Total</span></div>
+                <div class="seat-stat available"><span class="seat-num" id="staffAvailSeats">0</span><span>Available</span></div>
+                <div class="seat-stat occupied"><span class="seat-num" id="staffOccSeats">0</span><span>Occupied</span></div>
+            </div>
+            <div id="staffSeatingMap" class="seating-map clickable"></div>
+        </div>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="app.js"></script>
+<!-- ===== ADMIN SCREEN ===== -->
+<div id="adminScreen" class="screen">
+    <nav class="glass-nav">
+        <div class="nav-left"><div class="brand-sm"><i class="fas fa-utensils"></i> SmartCanteen <span class="role-badge admin">Admin</span></div></div>
+        <div class="nav-center">
+            <button class="nav-tab active" data-tab="dashboard" onclick="switchAdminTab('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</button>
+            <button class="nav-tab" data-tab="amenu" onclick="switchAdminTab('amenu')"><i class="fas fa-bowl-food"></i> Menu</button>
+        </div>
+        <div class="nav-right">
+            <button class="nav-tab theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+            <button class="btn-logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i></button>
+        </div>
+    </nav>
+    <div id="adminDashboardTab" class="tab-content active">
+        <div class="section-header"><h2>Today's Dashboard</h2></div>
+        <div class="stats-row" id="adminStats"></div>
+        <div class="charts-row">
+            <div class="glass-card chart-card"><h3>Popular Items</h3><canvas id="pieChart"></canvas></div>
+            <div class="glass-card chart-card"><h3>Orders Timeline</h3><canvas id="barChart"></canvas></div>
+        </div>
+        <div class="glass-card"><h3 style="margin-bottom:14px;">Recent Orders</h3><div id="adminOrdersList" class="admin-orders-table"></div></div>
+    </div>
+    <div id="adminMenuTab" class="tab-content">
+        <div class="section-header">
+            <h2>Canteen Configuration</h2>
+            <button class="btn-primary" onclick="showAddDishModal()"><i class="fas fa-plus"></i> Add New Dish</button>
+        </div>
+        <div class="glass-card animate-pop" style="margin-bottom:24px;">
+            <h3 style="margin-bottom:16px;">General Branding</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group"><label>Canteen Name</label><input type="text" id="cfgCanteenName" onchange="updateCanteenConfig()" placeholder="e.g. Royal Cafe"></div>
+                <div class="form-group"><label>Tagline</label><input type="text" id="cfgCanteenTagline" onchange="updateCanteenConfig()" placeholder="e.g. Taste of Excellence"></div>
+            </div>
+        </div>
+        <div id="adminMenuList" class="menu-manage-list"></div>
+    </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<div id="checkoutModal" class="modal-overlay">
+    <div class="modal glass-card">
+        <div class="modal-header"><h3>Checkout</h3><button onclick="closeModal('checkoutModal')" class="close-btn"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-body">
+            <div id="checkoutSummary"></div>
+            <h4 style="margin-bottom:10px;font-size:14px;color:var(--text2);">PAYMENT METHOD</h4>
+            <div class="payment-options">
+                <label class="payment-opt"><input type="radio" name="payment" value="wallet" checked><span class="radio-custom"></span><i class="fas fa-wallet"></i> Wallet</label>
+                <label class="payment-opt"><input type="radio" name="payment" value="online"><span class="radio-custom"></span><i class="fas fa-credit-card"></i> Online (UPI)</label>
+                <label class="payment-opt"><input type="radio" name="payment" value="offline"><span class="radio-custom"></span><i class="fas fa-money-bill-wave"></i> Pay at Counter <small style="color:var(--text2)">(within 10 min)</small></label>
+            </div>
+        </div>
+        <div class="modal-footer"><button class="btn-primary" onclick="placeOrder()"><i class="fas fa-bolt"></i> Place Order</button></div>
+    </div>
+</div>
+
+<div id="walletModal" class="modal-overlay">
+    <div class="modal glass-card">
+        <div class="modal-header"><h3>My Wallet</h3><button onclick="closeModal('walletModal')" class="close-btn"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-body">
+            <div class="wallet-display">₹<span id="walletDispBal">500</span></div>
+            <div class="form-group"><label>Add Money (₹)</label><input type="number" id="addMoneyAmt" placeholder="Enter amount" min="1"></div>
+        </div>
+        <div class="modal-footer"><button class="btn-primary" onclick="addMoney()"><i class="fas fa-plus"></i> Add Money</button></div>
+    </div>
+</div>
+
+<div id="addDishModal" class="modal-overlay">
+    <div class="modal glass-card">
+        <div class="modal-header"><h3>Add New Dish</h3><button onclick="closeModal('addDishModal')" class="close-btn"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-body">
+            <div class="form-group"><label>Dish Name</label><input type="text" id="newDishName" placeholder="e.g. Paneer Tikka"></div>
+            <div class="form-group"><label>Price (₹)</label><input type="number" id="newDishPrice" placeholder="e.g. 120" min="1"></div>
+            <div class="form-group"><label>Category</label>
+                <select id="newDishCat"><option value="snacks">Snacks</option><option value="meals">Meals</option><option value="beverages">Beverages</option><option value="desserts">Desserts</option></select>
+            </div>
+            <div class="form-group"><label>Emoji Icon</label><input type="text" id="newDishEmoji" placeholder="e.g. 🍛" maxlength="2"></div>
+            <div class="form-group"><label>Description</label><input type="text" id="newDishDesc" placeholder="Short description"></div>
+        </div>
+        <div class="modal-footer"><button class="btn-primary" onclick="addNewDish()"><i class="fas fa-plus"></i> Add Dish</button></div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
