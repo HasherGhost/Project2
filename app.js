@@ -512,5 +512,31 @@ function updateThemeIcons(theme) {
   loadCanteenConfig();
 })();
 
+// ===== INTERACTIVE LOGIN EFFECTS =====
+document.addEventListener('mousemove', (e) => {
+  if (currentRole === null) { // Only on login screen
+    const shapes = document.querySelectorAll('.floating-shape');
+    const cards = document.querySelectorAll('.login-card');
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+
+    shapes.forEach((shape, index) => {
+      const speed = (index + 1) * 20;
+      const xOffset = (x - 0.5) * speed;
+      const yOffset = (y - 0.5) * speed;
+      shape.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+    });
+
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const cardX = e.clientX - rect.left;
+      const cardY = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${cardX}px`);
+      card.style.setProperty('--mouse-y', `${cardY}px`);
+    });
+  }
+});
+
 // ===== INIT =====
 updateCartUI();
+loadCanteenConfig();
