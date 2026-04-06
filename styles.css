@@ -133,6 +133,69 @@ body{
   display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--accent2);
   margin:0 auto 24px;transition:all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
 .login-card:hover .card-icon{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff; transform: scale(1.1) rotate(5deg);}
+
+/* New Glassmorphic Login Form */
+.login-form {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  font-size: 14px;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Adjust theme toggle button positioning within login form */
+.login-form .theme-toggle-floating {
+  top: -20px;
+  right: -20px;
+}
 .login-card h3{font-size:22px;font-weight:700;margin-bottom:10px; color: #fff;}
 .login-card p{font-size:14px;color:var(--text2); line-height: 1.5}
 

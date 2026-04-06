@@ -88,7 +88,21 @@ function login(role) {
 function logout() {
   currentRole = null;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('loginScreen').classList.add('active');
+  document.getElementById('loginPage').classList.add('active');
+}
+
+function performLogin(event) {
+  event.preventDefault();
+  const role = document.getElementById('roleSelect').value;
+  // Simple placeholder authentication (can be expanded)
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  if (!username || !password) {
+    showToast('Please enter username and password');
+    return;
+  }
+  // Proceed with role-based login
+  login(role);
 }
 
 // ===== TABS =====

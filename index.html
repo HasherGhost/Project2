@@ -12,44 +12,34 @@
 </head>
 <body>
     <div class="mesh-bg"></div>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="screen active">
-        <div class="login-bg">
-            <div class="floating-shape s1"></div>
-            <div class="floating-shape s2"></div>
-            <div class="floating-shape s3"></div>
-            <div class="floating-shape s4"></div>
-            <div class="floating-shape s5"></div>
-            <div class="floating-shape s6"></div>
-        </div>
-        <div class="login-container">
-            <div class="login-brand reveal-1">
-                <div class="brand-icon"><i class="fas fa-utensils"></i></div>
-                <h1 id="canteenNameLogin">SmartCanteen</h1>
-                <p class="tagline" id="canteenTaglineLogin">Your campus dining, reimagined</p>
+    <div id="loginPage" class="screen active">
+    <div class="login-bg"></div>
+    <div class="glass-card login-form" style="max-width:400px;margin:auto;padding:32px;backdrop-filter:blur(20px);border-radius:20px;">
+        <h2 class="form-title" style="text-align:center;margin-bottom:24px;color:var(--text);">Welcome to SmartCanteen</h2>
+        <form onsubmit="performLogin(event)" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="form-group">
+                <label for="username" style="color:var(--text2);">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required style="width:100%;padding:10px;background:var(--surface);border:1px solid var(--glass-border);border-radius:12px;color:var(--text);"/>
             </div>
-            <div class="login-cards">
-                <div class="login-card reveal-2" onclick="login('student')">
-                    <div class="card-icon"><i class="fas fa-user-graduate"></i></div>
-                    <h3>Student</h3>
-                    <p>Pre-order meals & track orders</p>
-                </div>
-                <div class="login-card reveal-3" onclick="login('staff')">
-                    <div class="card-icon"><i class="fas fa-hat-wizard"></i></div>
-                    <h3>Staff</h3>
-                    <p>Manage orders & preparation</p>
-                </div>
-                <div class="login-card reveal-4" onclick="login('admin')">
-                    <div class="card-icon"><i class="fas fa-user-shield"></i></div>
-                    <h3>Admin</h3>
-                    <p>Dashboard & menu management</p>
-                </div>
+            <div class="form-group">
+                <label for="password" style="color:var(--text2);">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required style="width:100%;padding:10px;background:var(--surface);border:1px solid var(--glass-border);border-radius:12px;color:var(--text);"/>
             </div>
-            <button class="theme-toggle-floating" onclick="toggleTheme()" aria-label="Toggle Theme">
-                <i class="fas fa-moon" id="themeIconFloating"></i>
-            </button>
-        </div>
+            <div class="form-group">
+                <label for="roleSelect" style="color:var(--text2);">Role</label>
+                <select id="roleSelect" required style="width:100%;padding:10px;background:var(--surface);border:1px solid var(--glass-border);border-radius:12px;color:var(--text);">
+                    <option value="student">Student</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary login-button" style="padding:12px 0;">Login</button>
+        </form>
+        <button class="theme-toggle-floating" onclick="toggleTheme()" aria-label="Toggle Theme" style="position:absolute;top:20px;right:20px;">
+            <i class="fas fa-moon" id="themeIconFloating"></i>
+        </button>
     </div>
+</div>
 
     <!-- Student Screen -->
     <div id="studentScreen" class="screen">
