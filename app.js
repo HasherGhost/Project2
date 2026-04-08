@@ -285,6 +285,15 @@ function updateCartUI() {
   const count = cart.reduce((s,c) => s + c.qty, 0);
   const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
   const badge = document.querySelector('.cart-badge');
+  const countEl = document.getElementById('cartCount');
+  const totalEl = document.getElementById('cartTotal');
+
+  if (countEl) {
+    countEl.textContent = count;
+    countEl.style.display = count > 0 ? 'flex' : 'none';
+  }
+  if (totalEl) totalEl.textContent = total;
+
   if (badge) {
     badge.classList.remove('bump');
     void badge.offsetWidth; // Force reflow
