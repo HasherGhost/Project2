@@ -122,19 +122,32 @@ function performLogin(event) {
 }
 
 function login(role, username) {
-  currentRole = role;
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const screenId = role + 'Screen';
-  document.getElementById(screenId).classList.add('active');
+  try {
+    currentRole = role || 'student';
+    const screenId = currentRole + 'Screen';
+    const targetScreen = document.getElementById(screenId);
+    
+    if (!targetScreen) {
+      console.error(`Screen not found: ${screenId}`);
+      showToast('Error: Screen not found');
+      return;
+    }
 
-  if (role === 'student') {
-    updateGreeting(username);
-    renderMenu(); renderSeats(); renderStudentOrders();
-    updateHeroStats();
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    targetScreen.classList.add('active');
+
+    if (currentRole === 'student') {
+      updateGreeting(username);
+      renderMenu(); renderSeats(); renderStudentOrders();
+      updateHeroStats();
+    }
+    if (currentRole === 'staff')  { renderStaffOrders(); renderStaffMenu(); renderStaffSeats(); }
+    if (currentRole === 'admin')  { renderAdminDashboard(); renderAdminMenu(); applyCanteenConfig(); }
+    showToast(`Welcome, ${username || currentRole}! 🎉`);
+  } catch (err) {
+    console.error("Login Error:", err);
+    showToast("Something went wrong during login");
   }
-  if (role === 'staff')  { renderStaffOrders(); renderStaffMenu(); renderStaffSeats(); }
-  if (role === 'admin')  { renderAdminDashboard(); renderAdminMenu(); applyCanteenConfig(); }
-  showToast(`Welcome, ${username || role}! 🎉`);
 }
 
 function logout() {
@@ -622,10 +635,26 @@ function shootConfetti() {
 
 // ===== INIT =====
 (function initApp() {
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  document.body.setAttribute('data-theme', savedTheme);
-  updateThemeIcons(savedTheme);
-  loadCanteenConfig();
-  spawnParticles();
-  updateCartUI();
+  try {
+    // Initial theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+    updateThemeIcons(savedTheme);
+    
+    // Initial config
+    loadCanteenConfig();
+    
+    // UI Setup
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        spawnParticles();
+        updateCartUI();
+      });
+    } else {
+      spawnParticles();
+      updateCartUI();
+    }
+  } catch (err) {
+    console.warn("Init Warning:", err);
+  }
 })();
