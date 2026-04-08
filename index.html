@@ -123,11 +123,17 @@
         <div class="section-header">
             <h2>Today's Menu</h2>
             <div class="menu-filters">
-                <button class="filter-btn active" onclick="filterMenu('all', this)"><i class="fas fa-border-all"></i> All</button>
-                <button class="filter-btn" onclick="filterMenu('snacks', this)">🥟 Snacks</button>
-                <button class="filter-btn" onclick="filterMenu('meals', this)">🍛 Meals</button>
-                <button class="filter-btn" onclick="filterMenu('beverages', this)">☕ Beverages</button>
-                <button class="filter-btn" onclick="filterMenu('desserts', this)">🍩 Desserts</button>
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="menuSearch" placeholder="Search dishes..." oninput="searchMenu()">
+                </div>
+                <div class="filter-pills">
+                    <button class="filter-btn active" onclick="filterMenu('all', this)"><i class="fas fa-border-all"></i> All</button>
+                    <button class="filter-btn" onclick="filterMenu('snacks', this)">🥟 Snacks</button>
+                    <button class="filter-btn" onclick="filterMenu('meals', this)">🍛 Meals</button>
+                    <button class="filter-btn" onclick="filterMenu('beverages', this)">☕ Beverages</button>
+                    <button class="filter-btn" onclick="filterMenu('desserts', this)">🍩 Desserts</button>
+                </div>
             </div>
         </div>
         <div id="menuGrid" class="menu-grid"></div>
@@ -261,10 +267,31 @@
     <div class="modal glass-card">
         <div class="modal-header"><h3>My Wallet</h3><button onclick="closeModal('walletModal')" class="close-btn"><i class="fas fa-xmark"></i></button></div>
         <div class="modal-body">
-            <div class="wallet-display">₹<span id="walletDispBal">500</span></div>
-            <div class="form-group"><label>Add Money (₹)</label><input type="number" id="addMoneyAmt" placeholder="Enter amount" min="1"></div>
+            <div class="wallet-card">
+                <div class="wc-top">
+                    <i class="fas fa-wallet"></i>
+                    <span>Available Balance</span>
+                </div>
+                <div class="wallet-display">₹<span id="walletDispBal">500</span></div>
+                <div class="wc-bottom">
+                    <span>**** **** **** 2024</span>
+                    <i class="fab fa-cc-visa"></i>
+                </div>
+            </div>
+            <div class="form-group add-money-group">
+                <label>Top up Wallet (₹)</label>
+                <div class="input-with-btn">
+                    <input type="number" id="addMoneyAmt" placeholder="Enter amount" min="1">
+                    <button class="btn-primary" onclick="addMoney()"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
+            <div class="quick-amounts">
+                <button onclick="setAddAmount(100)">+₹100</button>
+                <button onclick="setAddAmount(200)">+₹200</button>
+                <button onclick="setAddAmount(500)">+₹500</button>
+            </div>
         </div>
-        <div class="modal-footer"><button class="btn-primary" onclick="addMoney()"><i class="fas fa-plus"></i> Add Money</button></div>
+        <div class="modal-footer" style="display:none;"></div>
     </div>
 </div>
 

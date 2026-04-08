@@ -31,6 +31,7 @@ let currentFilter = 'all';
 let seats = Array.from({length:40}, (_,i) => ({id:i+1, occupied: Math.random() < 0.3}));
 let nextDishId = 21;
 let selectedRole = 'student';
+let searchQuery = '';
 
 // ===== CANTEEN CONFIG =====
 let canteenConfig = { name: "SmartCanteen", tagline: "Your campus dining, reimagined" };
@@ -201,13 +202,35 @@ function filterMenu(cat, btnEl) {
   renderMenu();
 }
 
+function searchMenu() {
+  searchQuery = document.getElementById('menuSearch').value.toLowerCase();
+  renderMenu();
+}
+
 function renderMenu() {
   const grid = document.getElementById('menuGrid');
-  const items = currentFilter === 'all' ? menuData : menuData.filter(i => i.category === currentFilter);
-  grid.innerHTML = items.map(item => {
+  let items = currentFilter === 'all' ? menuData : menuData.filter(i => i.category === currentFilter);
+  
+  if (searchQuery) {
+    items = items.filter(i => 
+      i.name.toLowerCase().includes(searchQuery) || 
+      i.desc.toLowerCase().includes(searchQuery)
+    );
+  }
+
+  if (items.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1/-1; padding: 60px; text-align: center;">
+        <i class="fas fa-search" style="font-size: 48px; opacity:0.1; display: block; margin-bottom: 16px;"></i>
+        <p style="color: var(--text2);">No dishes found matches your search.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map((item, index) => {
     const qty = getCartQty(item.id);
     return `
-    <div class="menu-item ${item.available ? '' : 'unavailable'}" id="mi-${item.id}">
+    <div class="menu-item ${item.available ? '' : 'unavailable'}" id="mi-${item.id}" style="animation-delay: ${index * 0.05}s">
       <span class="menu-item-emoji">${item.emoji}</span>
       <div class="item-category-tag">${item.category}</div>
       <div class="item-name">${item.name}</div>
@@ -254,7 +277,12 @@ function updateCartUI() {
   updateHeroStats();
   const container = document.getElementById('cartItems');
   if (cart.length === 0) {
-    container.innerHTML = '<p style="text-align:center;color:var(--text2);padding:50px 0;font-size:14px;"><i class="fas fa-bag-shopping" style="font-size:32px;display:block;margin-bottom:12px;opacity:0.3;"></i>Your cart is empty</p>';
+    container.innerHTML = `
+      <div class="empty-cart-state">
+        <div class="ec-icon"><i class="fas fa-shopping-basket"></i></div>
+        <p>Your basket is empty</p>
+        <button class="btn-primary" onclick="toggleCart()" style="margin-top:20px; font-size:12px;">Start Shopping</button>
+      </div>`;
     return;
   }
   container.innerHTML = cart.map(c => `
@@ -316,7 +344,7 @@ function placeOrder() {
     document.getElementById('walletDispBal').textContent = walletBalance;
   }
   const order = {
-    id: 'ORD-' + (++orderCounter),
+    id: 'ORD-' + Date.now().toString().slice(-4) + Math.floor(Math.random()*100),
     items: [...cart], total, payment: paymentMethod,
     paymentDone: paymentMethod !== 'offline',
     status: 'pending', time: new Date(),
@@ -328,6 +356,7 @@ function placeOrder() {
   closeModal('checkoutModal');
   switchStudentTab('orders');
   showToast(`✅ ${order.id} placed successfully!`);
+  shootConfetti();
 }
 
 // ===== STUDENT ORDERS =====
@@ -529,9 +558,13 @@ function showWalletModal() {
   document.getElementById('walletDispBal').textContent = walletBalance;
   openModal('walletModal');
 }
+function setAddAmount(amt) {
+  document.getElementById('addMoneyAmt').value = amt;
+}
 function addMoney() {
   const amt = parseInt(document.getElementById('addMoneyAmt').value);
   if (!amt || amt <= 0) { showToast('Enter a valid amount'); return; }
+  if (amt > 10000) { showToast('Max ₹10,000 at a time'); return; }
   walletBalance += amt;
   document.getElementById('walletBalance').textContent = walletBalance;
   document.getElementById('walletDispBal').textContent = walletBalance;
@@ -562,11 +595,29 @@ function toggleTheme() {
   localStorage.setItem('theme', next);
   updateThemeIcons(next);
 }
+
 function updateThemeIcons(theme) {
   document.querySelectorAll('.theme-toggle i, #themeIconFloating').forEach(icon => {
     if (theme === 'light') icon.classList.replace('fa-moon','fa-sun');
     else icon.classList.replace('fa-sun','fa-moon');
   });
+}
+
+// ===== CONFETTI =====
+function shootConfetti() {
+  const colors = ['#6c63ff', '#a78bfa', '#38bdf8', '#22d3a4', '#fbbf24'];
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (Math.random() * 8 + 4) + 'px';
+    el.style.height = el.style.width;
+    el.style.animationDuration = (Math.random() * 2 + 1) + 's';
+    el.style.animationDelay = (Math.random() * 0.5) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
 }
 
 // ===== INIT =====
