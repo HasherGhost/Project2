@@ -277,15 +277,20 @@ function addToCart(itemId) {
   if (existing) existing.qty++;
   else cart.push({...item, qty: 1});
   updateCartUI();
-  renderMenu();
+  updateMenuItemUI(itemId);
   showToast(`${item.emoji} ${item.name} added!`);
 }
 
 function updateCartUI() {
   const count = cart.reduce((s,c) => s + c.qty, 0);
   const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
-  document.getElementById('cartCount').textContent = count;
-  document.getElementById('cartTotal').textContent = total;
+  const badge = document.querySelector('.cart-badge');
+  if (badge) {
+    badge.classList.remove('bump');
+    void badge.offsetWidth; // Force reflow
+    badge.classList.add('bump');
+  }
+
   // Update hero wallet too
   updateHeroStats();
   const container = document.getElementById('cartItems');
@@ -324,7 +329,29 @@ function changeQty(id, delta) {
     showToast(delta > 0 ? "Quantity increased" : "Quantity decreased");
   }
   updateCartUI();
-  renderMenu();
+  updateMenuItemUI(id);
+}
+
+function updateMenuItemUI(id) {
+  const item = menuData.find(m => m.id === id);
+  if (!item) return;
+  const qty = getCartQty(id);
+  const itemEl = document.getElementById(`mi-${id}`);
+  if (!itemEl) return;
+  
+  const actionsWrap = itemEl.querySelector('.item-actions');
+  if (item.available) {
+    if (qty > 0) {
+      actionsWrap.innerHTML = `
+        <div class="qty-control-main animate-pop">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+          <span class="qty-label">${qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+        </div>`;
+    } else {
+      actionsWrap.innerHTML = `<button class="btn-add animate-pop" onclick="addToCart(${item.id})"><i class="fas fa-plus"></i></button>`;
+    }
+  }
 }
 
 function toggleCart() {
