@@ -28,6 +28,10 @@
   --grad-p: #6c63ff;
   --grad-q: #a78bfa;
   --grad-r: #38bdf8;
+  --sidebar-bg: rgba(8,8,24,0.92);
+  --wallet-bg: linear-gradient(135deg, #1e1e3f 0%, #0d0d1f 100%);
+  --wallet-text: #fff;
+  --wallet-icon: #fff;
 }
 
 [data-theme="light"] {
@@ -46,6 +50,10 @@
   --grad-p: #a29bfe;
   --grad-q: #dfe6e9;
   --grad-r: #74b9ff;
+  --sidebar-bg: rgba(242,244,248,0.92);
+  --wallet-bg: linear-gradient(135deg, #ffffff 0%, #f2f4f8 100%);
+  --wallet-text: #1a1a2e;
+  --wallet-icon: rgba(0,0,0,0.5);
 }
 
 html { scroll-behavior: smooth; }
@@ -55,7 +63,14 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* Theme switch transition class */
+.theme-transition-active,
+.theme-transition-active *,
+.theme-transition-active *::before,
+.theme-transition-active *::after {
+  transition: background-color 0.5s ease, background 0.5s ease, color 0.5s ease, border-color 0.5s ease, fill 0.5s ease, stroke 0.5s ease !important;
 }
 
 
@@ -884,7 +899,7 @@ body {
 =========================== */
 .cart-sidebar {
   position: fixed; top: 0; right: -440px; width: 420px; height: 100vh;
-  background: rgba(8,8,24,0.92);
+  background: var(--sidebar-bg);
   backdrop-filter: blur(32px) saturate(160%);
   border-left: 1px solid var(--glass-border);
   z-index: 200;
@@ -904,7 +919,7 @@ body {
 .cart-item {
   display: flex; justify-content: space-between; align-items: center;
   padding: 14px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--glass-border);
   animation: slideInCart 0.3s ease;
 }
 @keyframes slideInCart {
@@ -930,7 +945,7 @@ body {
 .cart-footer {
   padding: 20px 24px;
   border-top: 1px solid var(--glass-border);
-  background: rgba(0,0,0,0.2);
+  background: var(--surface);
 }
 
 .empty-cart-state {
@@ -1021,7 +1036,7 @@ body {
 
 /* WALLET CARD PREMIUM */
 .wallet-card {
-  background: linear-gradient(135deg, #1e1e3f 0%, #0d0d1f 100%);
+  background: var(--wallet-bg);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 20px;
   padding: 24px;
@@ -1050,7 +1065,7 @@ body {
 .wallet-display {
   font-size: 36px;
   font-weight: 800;
-  color: #fff;
+  color: var(--wallet-text);
   letter-spacing: -1px;
   margin-bottom: 16px;
 }
@@ -1062,7 +1077,7 @@ body {
   font-size: 12px;
   letter-spacing: 1px;
 }
-.wc-bottom i { font-size: 24px; opacity: 0.5; }
+.wc-bottom i { font-size: 24px; opacity: 1; color: var(--wallet-icon); }
 
 .add-money-group label {
   font-size: 12px;

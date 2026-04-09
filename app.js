@@ -395,7 +395,7 @@ function showCheckoutModal() {
   const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
   document.getElementById('checkoutSummary').innerHTML = `
     <div style="background:var(--surface);border-radius:14px;padding:16px;margin-bottom:20px;">
-      ${cart.map(c => `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.05);">
+      ${cart.map(c => `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--glass-border);">
         <span>${c.emoji} ${c.name} × ${c.qty}</span><span style="font-weight:600;">₹${c.price*c.qty}</span></div>`).join('')}
       <div style="display:flex;justify-content:space-between;padding:10px 0 0;font-weight:800;font-size:16px;color:var(--accent2);">
         <span>Total</span><span>₹${total}</span></div>
@@ -657,12 +657,17 @@ function showToast(msg) {
 
 // ===== THEME TOGGLE =====
 function toggleTheme() {
+  document.documentElement.classList.add('theme-transition-active');
   const body = document.body;
   const current = body.getAttribute('data-theme') || 'dark';
   const next = current === 'dark' ? 'light' : 'dark';
   body.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   updateThemeIcons(next);
+  
+  setTimeout(() => {
+    document.documentElement.classList.remove('theme-transition-active');
+  }, 500);
 }
 
 function updateThemeIcons(theme) {
