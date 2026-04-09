@@ -42,7 +42,10 @@ function loadCanteenConfig() {
   applyCanteenConfig();
 }
 function applyCanteenConfig() {
-  document.getElementById('canteenNameLogin').textContent = canteenConfig.name;
+  const nameTop = document.getElementById('canteenNameTop');
+  if (nameTop) nameTop.textContent = canteenConfig.name;
+  
+  document.getElementById('canteenNameLogin').textContent = "Sign In"; // Keeping this as Sign In for the card title
   document.getElementById('canteenTaglineLogin').textContent = canteenConfig.tagline;
   document.getElementById('canteenNameNav').textContent = canteenConfig.name;
   if (currentRole === 'admin') {
@@ -96,10 +99,24 @@ function spawnParticles() {
 }
 
 // ===== ROLE TAB SELECT =====
-function selectRoleTab(btn) {
+function selectRoleTab(btn, index) {
   document.querySelectorAll('.role-tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedRole = btn.dataset.role;
+
+  // Move Slider
+  const slider = document.getElementById('roleSlider');
+  if (slider) {
+    slider.style.left = `calc(${index * 33.33}% + 6px)`;
+  }
+
+  // Trigger form animation
+  const form = btn.closest('.login-card-glass').querySelector('form');
+  if (form) {
+    form.style.animation = 'none';
+    void form.offsetWidth; // trigger reflow
+    form.style.animation = 'roleIn 0.6s ease both';
+  }
 }
 
 // ===== LOGIN =====
@@ -159,6 +176,9 @@ function logout() {
   document.querySelectorAll('.role-tab-btn').forEach(b => b.classList.remove('active'));
   const firstTab = document.querySelector('.role-tab-btn');
   if (firstTab) firstTab.classList.add('active');
+  // Reset Slider
+  const slider = document.getElementById('roleSlider');
+  if (slider) slider.style.left = '6px';
   // Clear form
   const uEl = document.getElementById('loginUsername');
   const pEl = document.getElementById('loginPassword');

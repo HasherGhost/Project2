@@ -26,55 +26,68 @@
     <!-- Floating food particles injected by JS -->
     <div class="login-particles" id="loginParticles"></div>
 
-    <div class="login-wrapper">
-        <button class="login-theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
-            <i class="fas fa-moon" id="themeIconFloating"></i>
-        </button>
+    <div class="login-top-brand">
+        <div class="brand-logo"><i class="fas fa-utensils"></i></div>
+        <div class="brand-text" id="canteenNameTop">SmartCanteen</div>
+    </div>
 
-        <div class="login-card-glass">
-            <!-- Brand -->
-            <div class="login-brand">
-                <div class="login-logo"><i class="fas fa-utensils"></i></div>
-                <div class="login-title" id="canteenNameLogin">SmartCanteen</div>
-                <div class="login-subtitle" id="canteenTaglineLogin">Your campus dining, reimagined</div>
+    <div class="login-container">
+        <div class="login-hero-section">
+            <h1 class="hero-main-title">Savory Moments,<br><span class="accent-text">Effortless Dining.</span></h1>
+            <p class="hero-description">Experience the future of campus dining. Pre-order your meals, skip the queues, and enjoy every bite at the Smart Canteen.</p>
+            <div class="hero-features">
+                <div class="feat"><i class="fas fa-bolt"></i> Instant Pre-order</div>
+                <div class="feat"><i class="fas fa-chair"></i> Live Seating</div>
+                <div class="feat"><i class="fas fa-wallet"></i> Digital Payments</div>
             </div>
+        </div>
 
-            <!-- Role selector -->
-            <div class="role-tabs" id="roleTabs">
-                <button class="role-tab-btn active" data-role="student" onclick="selectRoleTab(this)">
-                    <i class="fas fa-graduation-cap"></i> Student
-                </button>
-                <button class="role-tab-btn" data-role="staff" onclick="selectRoleTab(this)">
-                    <i class="fas fa-utensils"></i> Staff
-                </button>
-                <button class="role-tab-btn" data-role="admin" onclick="selectRoleTab(this)">
-                    <i class="fas fa-shield-halved"></i> Admin
-                </button>
+        <div class="login-wrapper">
+            <div class="login-card-glass">
+                <!-- Brand (Internal) -->
+                <div class="login-brand">
+                    <div class="login-title" id="canteenNameLogin">Sign In</div>
+                    <div class="login-subtitle" id="canteenTaglineLogin">Welcome back to your campus hub</div>
+                </div>
+
+                <!-- Role selector -->
+                <div class="role-tabs" id="roleTabs">
+                    <div class="role-slider" id="roleSlider"></div>
+                    <button class="role-tab-btn active" data-role="student" onclick="selectRoleTab(this, 0)">
+                        <i class="fas fa-graduation-cap"></i> Student
+                    </button>
+                    <button class="role-tab-btn" data-role="staff" onclick="selectRoleTab(this, 1)">
+                        <i class="fas fa-utensils"></i> Staff
+                    </button>
+                    <button class="role-tab-btn" data-role="admin" onclick="selectRoleTab(this, 2)">
+                        <i class="fas fa-shield-halved"></i> Admin
+                    </button>
+                </div>
+
+                <!-- Login form -->
+                <form onsubmit="performLogin(event)" autocomplete="off">
+                    <div class="lf-group">
+                        <label class="lf-label" for="loginUsername">Username</label>
+                        <div class="lf-input-wrap">
+                            <input class="lf-input" type="text" id="loginUsername" placeholder="Enter your username" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="lf-group">
+                        <label class="lf-label" for="loginPassword">Password</label>
+                        <div class="lf-input-wrap">
+                            <input class="lf-input" type="password" id="loginPassword" placeholder="Enter your password" required>
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-login" id="loginBtn">
+                        <span>Sign In</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <p class="login-hint">Demo credentials: any input works ✨</p>
             </div>
-
-            <!-- Login form -->
-            <form onsubmit="performLogin(event)" autocomplete="off">
-                <div class="lf-group">
-                    <label class="lf-label" for="loginUsername">Username</label>
-                    <div class="lf-input-wrap">
-                        <input class="lf-input" type="text" id="loginUsername" placeholder="Enter your username" required>
-                        <i class="fas fa-user"></i>
-                    </div>
-                </div>
-                <div class="lf-group">
-                    <label class="lf-label" for="loginPassword">Password</label>
-                    <div class="lf-input-wrap">
-                        <input class="lf-input" type="password" id="loginPassword" placeholder="Enter your password" required>
-                        <i class="fas fa-lock"></i>
-                    </div>
-                </div>
-                <button type="submit" class="btn-login" id="loginBtn">
-                    <span>Sign In</span>
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </form>
-
-            <p class="login-hint">Demo: any username &amp; password works ✨</p>
         </div>
     </div>
 </div>
